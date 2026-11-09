@@ -9,6 +9,7 @@ import {
     FaSignOutAlt, FaSearch, FaCommentDots, FaLock, FaKey, FaCopy, FaExternalLinkAlt
 } from 'react-icons/fa';
 import VideoCallInterface from '../components/VideoCallInterface';
+import SnapshotPanel from '../components/SnapshotPanel';
 import { userService, adminService } from '../services/api';
 import { PortfolioData, Project, Skill, WorkExperience, ChatMessage, Region, LocalOrg, Department } from '../types';
 import { useNavigate } from 'react-router-dom';
@@ -411,6 +412,12 @@ const User: React.FC = () => {
 
                             <textarea className="w-full border p-2 rounded" rows={4} placeholder="Bio" value={editingProfile.bio} onChange={e => setEditingProfile({ ...editingProfile, bio: e.target.value })} />
                             <button onClick={saveProfile} className="bg-blue-600 text-white px-6 py-2 rounded font-bold hover:bg-blue-700"><FaSave className="inline mr-2" /> Save Changes</button>
+                            <SnapshotPanel
+                                profileId={portfolioData?.id}
+                                getCurrentData={() => editingProfile}
+                                onRestore={(data) => setEditingProfile(data)}
+                                accent="blue"
+                            />
                         </div>
                     </div>
                 )}

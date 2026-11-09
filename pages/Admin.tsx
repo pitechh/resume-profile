@@ -10,6 +10,7 @@ import {
   FaChevronLeft, FaChevronRight, FaIdBadge
 } from 'react-icons/fa';
 import VideoCallInterface from '../components/VideoCallInterface';
+import SnapshotPanel from '../components/SnapshotPanel';
 import { portfolioService, adminService } from '../services/api';
 import { PortfolioData, Project, Skill, WorkExperience, ChatMessage, Region, LocalOrg, Department } from '../types';
 import axios from 'axios';
@@ -630,6 +631,12 @@ const Admin: React.FC = () => {
               </div>
               <textarea className="w-full border p-2 rounded" rows={4} placeholder="Bio" value={editingProfile.bio} onChange={e => setEditingProfile({ ...editingProfile, bio: e.target.value })} />
               <button onClick={saveProfile} className="bg-orange-500 text-white px-6 py-2 rounded font-bold hover:bg-orange-600"><FaSave className="inline mr-2" /> Save Changes</button>
+              <SnapshotPanel
+                profileId={portfolioData?.id}
+                getCurrentData={() => editingProfile}
+                onRestore={(data) => setEditingProfile(data)}
+                accent="orange"
+              />
             </div>
           </div>
         )}

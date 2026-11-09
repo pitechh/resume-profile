@@ -39,3 +39,16 @@ node_modules/
 
 # file khoá tạm của LibreOffice
 .~lock.*
+
+# Codebase Memory index
+.codebase-memory/
+
+# Backend Node.js — dữ liệu JSON runtime (không commit)
+backend/storage/
+backend/node_modules/
+
+# Cursor / AI tooling cục bộ (cấu hình máy cá nhân, không commit)
+.cursor/
+.skills/
+skills/
+.agent/

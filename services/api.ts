@@ -267,4 +267,89 @@ export const userService = {
   activateProfile: (id: number) => api.post(`/user/profile/${id}/activate`)
 };
 
+// ---------------------------------------------------------------------------
+// File Storage — backend Node.js Express, lưu JSON trong thư mục (không DB)
+// Base: {VITE_API_URL}/api/v1/storage  (mặc định http://localhost:8080)
+// Chi tiết endpoint: xem backend/README.md
+// ---------------------------------------------------------------------------
+export interface StorageDocMeta {
+  id: string;
+  size: number;
+  updatedAt: string;
+  title?: string;
+  name?: string;
+}
+
+export const storageService = {
+  /** GET /storage/health */
+  health: async () => (await api.get('/storage/health')).data,
+
+  /** GET /storage — liệt kê collection + thống kê */
+  listCollections: async () => (await api.get('/storage')).data,
+
+  /** GET /storage/{collection} — liệt kê document */
+  list: async (collection: string) =>
+    (await api.get<{ collection: string; count: number; items: StorageDocMeta[] }>(
+      `/storage/${encodeURIComponent(collection)}`,
+    )).data,
+
+  /** POST /storage/{collection} — tạo document ({ id?, data, title? }) */
+  create: async (collection: string, body: { id?: string; data: unknown; title?: string }) =>
+    (await api.post(`/storage/${encodeURIComponent(collection)}`, body)).data,
+
+  /** GET /storage/{collection}/{docId} */
+  get: async <T = unknown>(collection: string, docId: string): Promise<T> =>
+    (await api.get(`/storage/${encodeURIComponent(collection)}/${encodeURIComponent(docId)}`)).data,
+
+  /** PUT /storage/{collection}/{docId} — ghi đè / upsert */
+  put: async (collection: string, docId: string, body: { data: unknown; title?: string }) =>
+    (await api.put(`/storage/${encodeURIComponent(collection)}/${encodeURIComponent(docId)}`, body)).data,
+
+  /** PATCH /storage/{collection}/{docId} — merge một phần field */
+  patch: async (collection: string, docId: string, body: { data: unknown }) =>
+    (await api.patch(`/storage/${encodeURIComponent(collection)}/${encodeURIComponent(docId)}`, body)).data,
+
+  /** DELETE /storage/{collection}/{docId} */
+  remove: async (collection: string, docId: string) =>
+    (await api.delete(`/storage/${encodeURIComponent(collection)}/${encodeURIComponent(docId)}`)).data,
+
+  /** Tải file .json gốc (mở tab mới) */
+  download: (collection: string, docId: string) =>
+    window.open(
+      `${API_URL}/storage/${encodeURIComponent(collection)}/download/${encodeURIComponent(docId)}`,
+      '_blank',
+    ),
+
+  /** Tải cả collection gộp thành 1 file */
+  exportCollection: (collection: string) =>
+    window.open(`${API_URL}/storage/${encodeURIComponent(collection)}/export`, '_blank'),
+
+  /** POST /storage/import/{collection} — nạp hàng loạt */
+  importMany: async (
+    collection: string,
+    body: { items: Array<{ id?: string; data: unknown }>; overwrite?: boolean },
+  ) => (await api.post(`/storage/import/${encodeURIComponent(collection)}`, body)).data,
+};
+
+/** Snapshot hồ sơ có version: POST/GET /storage/portfolio/{profileId} */
+export const portfolioStorageService = {
+  saveSnapshot: async (profileId: number, data: unknown) =>
+    (await api.post(`/storage/portfolio/${profileId}`, data)).data as {
+      status: string;
+      profileId: number;
+      version: string;
+      path: string;
+    },
+
+  getSnapshot: async <T = PortfolioData>(profileId: number): Promise<T> =>
+    (await api.get(`/storage/portfolio/${profileId}`)).data,
+
+  listVersions: async (profileId: number) =>
+    (await api.get(`/storage/portfolio/${profileId}/versions`)).data as {
+      profileId: number;
+      count: number;
+      versions: Array<{ id: string; updatedAt: string }>;
+    },
+};
+
 export default api;
