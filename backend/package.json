@@ -1,0 +1,22 @@
+{
+  "name": "pitechlab-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PITECH LAB Dynamic Portfolio — Backend Node.js (Express). Lưu dữ liệu dạng JSON trong thư mục, không dùng database.",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "seed": "node src/seed.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.3.0",
+    "morgan": "^1.10.1",
+    "sockjs": "^0.3.24"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
